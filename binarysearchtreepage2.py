@@ -279,7 +279,7 @@ class binarysearchtree_contents(object):
                 self.animate(temp.canvas, output,'#fb5581')
                 return
         else:
-            msg.showwarning(title="Not Found",message="{} is not present in tree.".format(input))
+            msg.showwarning(title="Not Found",message="{} not present in tree.".format(input))
             return
 
     def delete(self, output,diffinput=""):
@@ -287,33 +287,18 @@ class binarysearchtree_contents(object):
         input = int(self.node.get())
 
         if diffinput!="":
-
             input = diffinput[0].val
             temp = diffinput[1]
-            prev = temp.parent
-            #prev = diffinput[0].parent
+            prev = diffinput[0].parent
             deletion_to_be_made = diffinput[2]
 
-            if prev.parent and temp.val < self.root.val and temp.val<prev.val and prev.parent.val>prev.val:
-              deletion_to_be_made.append([prev, 40, output])
-            elif prev.parent and temp.val < self.root.val and temp.val > prev.val and prev.parent.val > prev.val:
-                deletion_to_be_made.append([prev, 40, output])
-            elif prev.parent and temp.val > self.root.val and temp.val>prev.val and prev.parent.val<prev.val:
-              deletion_to_be_made.append([prev, -40, output])
-            elif prev.parent and temp.val > self.root.val and temp.val < prev.val and prev.parent.val < prev.val:
-                deletion_to_be_made.append([prev, -40, output])
-
-            #if temp.val < self.root.val and temp.val<prev.val and prev.parent.val>prev.val:
-                #deletion_to_be_made.append([prev, 40, output])
-            #elif temp.val > self.root.val and temp.val>prev.val and prev.parent.val<prev.val:
-                #deletion_to_be_made.append([prev, -40, output])
         else:
             deletion_to_be_made = []
             if self.root:
                 temp = self.root
                 prev = self.root
             else:
-                msg.showwarning(title="Not Present", message="Root does not exists")
+                msg.showwarning(title="Not Present", message="Node is not present in tree.")
                 return
 
         if input == "" or input == "Enter node value":
@@ -324,7 +309,7 @@ class binarysearchtree_contents(object):
             self.found_delete(prev, 'root', '', temp, deletion_to_be_made, output)
             return
         elif input == temp.val and diffinput != "":
-            self.found_delete(prev, 'not_root', '', temp, deletion_to_be_made, output)
+            self.found_delete(prev, 'nroot', '', temp, deletion_to_be_made, output)
             return
 
         if input<temp.val:
@@ -335,7 +320,7 @@ class binarysearchtree_contents(object):
                     temp = temp.left
 
                     if not temp:
-                        msg.showwarning(title="Not Present", message="{} is not present in tree.".format(input))
+                        msg.showwarning(title="Not Present", message="Node is not present in tree.")
                         return
                     else:
                         ancestor = prev.parent
@@ -354,7 +339,7 @@ class binarysearchtree_contents(object):
                     ancestor = prev.parent
                     temp = temp.right
                     if not temp:
-                        msg.showwarning(title="Not Present", message="{} is not present in tree.".format(input))
+                        msg.showwarning(title="Not Present", message="Node is not present in tree.")
                         return
                     else:
                         if ancestor and ancestor.val > prev.val:
@@ -372,7 +357,7 @@ class binarysearchtree_contents(object):
                     self.animate(prev.canvas, output)
                     temp = temp.right
                     if not temp:
-                        msg.showwarning(title="Not Present", message="{} is not present in tree.".format(input))
+                        msg.showwarning(title="Not Present", message="Node is not present in tree.")
                         return
                     else:
                         ancestor = prev.parent
@@ -391,7 +376,7 @@ class binarysearchtree_contents(object):
                     temp = temp.left
 
                     if not temp:
-                        msg.showwarning(title="Not Present", message="{} is not present in tree.".format(input))
+                        msg.showwarning(title="Not Present", message="Node is not present in tree.")
                         return
                     else:
                         if ancestor and ancestor.val <= prev.val:
@@ -408,12 +393,7 @@ class binarysearchtree_contents(object):
 
     def found_delete(self,prev,dir1,dir2,temp,deletion_to_be_made,output):
         if temp.left is None and temp.right is None:
-            if dir1=="not_root":
-                if prev.val>=temp.val:
-                    prev.right = None
-                else:
-                    prev.left = None
-            elif dir1 == "root":
+            if dir1 == "root":
                 self.root = None
             if dir2 == "l":
                 prev.left = None
@@ -426,18 +406,8 @@ class binarysearchtree_contents(object):
                                      True)
             return
         elif temp.left and (temp.right is None):
-            if dir1 == "not_root":
-                canvas = temp.canvas
-                output.delete(canvas[0], canvas[1], canvas[2])
-                prev.left = temp.left
-                temp.left.parent = prev
-                for i in range(len(deletion_to_be_made)):
-                    self.move_all_cnodes(deletion_to_be_made[i][0], deletion_to_be_made[i][1],
-                                         deletion_to_be_made[i][2],
-                                         True)
-                self.move_all_cnodes(temp.left, 40, output, True, -40)
 
-            elif dir1 == "root":
+            if dir1 == "root":
                 canvas = temp.canvas
                 output.delete(canvas[0], canvas[1], canvas[2])
                 output.delete(temp.left.canvas[2])
@@ -472,18 +442,7 @@ class binarysearchtree_contents(object):
 
             return
         elif temp.right and (temp.left is None):
-            if dir1 == "not_root":
-                canvas = temp.canvas
-                output.delete(canvas[0], canvas[1], canvas[2])
-                prev.right = temp.right
-                temp.right.parent = prev
-                for i in range(len(deletion_to_be_made)):
-                    self.move_all_cnodes(deletion_to_be_made[i][0], deletion_to_be_made[i][1],
-                                         deletion_to_be_made[i][2],
-                                         True)
-                self.move_all_cnodes(temp.right, -40, output, True, -40)
-
-            elif dir1 == "root":
+            if dir1 == "root":
                 canvas = temp.canvas
                 output.delete(canvas[0], canvas[1], canvas[2])
                 output.delete(temp.right.canvas[2])
@@ -534,6 +493,9 @@ class binarysearchtree_contents(object):
             time.sleep(1)
             temp.val,prev_n.val = prev_n.val,temp.val
             self.delete(output, [prev_n, temp.right, deletion_to_be_made])
+            if dir1 == "root":
+                self.root.val = prev_n.val
+                output.itemconfig(self.root.canvas[1], text=self.root.val)
             return
 
     def move_all_cnodes(self,parent,byx,output,rev=False,byy=0):

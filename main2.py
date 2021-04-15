@@ -11,7 +11,8 @@ import bubblesortpage
 import insertionsortpage
 import selectionsortpage
 import footer
-
+import bfspage
+import dfspage
 
 class vALGO(object):
     def __init__(self):
@@ -30,12 +31,14 @@ class vALGO(object):
         self.stackpage = ttk.Frame(master=self.window)
         self.linkedlistpage = ttk.Frame(master=self.window)
         self.binarysearchtreepage = ttk.Frame(master=self.window)
+        self.bfspage = ttk.Frame(master=self.window)
+        self.dfspage = ttk.Frame(master=self.window)
         self.bubblesortpage = ttk.Frame(master=self.window)
         self.insertionsortpage = ttk.Frame(master=self.window)
         self.selectionsortpage = ttk.Frame(master=self.window)
         self.dashboardpage = ttk.Frame(master=self.window)
 
-        self.pages = [self.selectionsortpage,self.insertionsortpage,self.bubblesortpage,self.binarysearchtreepage,self.queuepage,self.stackpage,self.linkedlistpage,self.dashboardpage]
+        self.pages = [self.selectionsortpage,self.insertionsortpage,self.bubblesortpage,self.dfspage,self.bfspage,self.binarysearchtreepage,self.queuepage,self.stackpage,self.linkedlistpage,self.dashboardpage]
         for page in self.pages:
             page.grid(row=0,column=0,sticky='news')
 
@@ -56,6 +59,10 @@ class vALGO(object):
         #tree
         binarysearchtreecontents = binarysearchtreepage.binarysearchtree_contents(self.dashboardpage, self.binarysearchtreepage, self.width,
                                                                                     self.height)
+
+        #graph
+        bfs = bfspage.bfs_contents(self.dashboardpage, self.bfspage, self.width,self.height)
+        dfs = dfspage.dfs_contents(self.dashboardpage, self.dfspage, self.width,self.height)
 
 
     def dashboard_page(self,parentframe):
@@ -85,19 +92,19 @@ class vALGO(object):
         algo.addalgo("Linkedlist", self.width, self.height, algoimg, 0, 1, self.linkedlistpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/ptree.png"
+        algoimg = "D:/python projects/logos/png/queue.png"
         algo.addalgo("Queue", self.width, self.height, algoimg, 0, 2, self.queuepage)
 
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/ptree.png"
+        algoimg = "D:/python projects/logos/png/selectionsort.png"
         algo.addalgo("Selection sort", self.width, self.height, algoimg, 1, 0,
                                   self.selectionsortpage)
 
         algo = settings.algos(contents)
         algoimg = "D:/python projects/logos/png/bubblesort.png"
 
-        algo.addalgo("Bubble sort", self.width, self.height, algoimg, 1,1,
+        algo.addalgo("Bubble sort", self.width, self.height, algoimg, 2,1,
                                   self.bubblesortpage)
 
         algo = settings.algos(contents)
@@ -109,6 +116,13 @@ class vALGO(object):
         algoimg = "D:/python projects/logos/png/binarytree.png"
         algo.addalgo("Binary Search Tree", self.width, self.height, algoimg, 2, 0, self.binarysearchtreepage)
 
+        algo = settings.algos(contents)
+        algoimg = "D:/python projects/logos/png/bfs.png"
+        algo.addalgo("BFS", self.width, self.height, algoimg, 1, 1, self.bfspage)
+
+        algo = settings.algos(contents)
+        algoimg = "D:/python projects/logos/png/dfs.png"
+        algo.addalgo("DFS", self.width, self.height, algoimg, 2, 2, self.dfspage)
 
         contents.pack()
         self.end = footer.footerlabel(parentframe)
