@@ -16,7 +16,7 @@ class algos(object):
                        command= self.raise_frame,compound="top",style="my.TButton")
         fr.image = tk.PhotoImage(file=img)
         fr['image'] = fr.image
-        fr.grid(row=row, column=col, sticky="news", pady=10,padx=10)
+        fr.grid(row=row, column=col, sticky="news", pady=5,padx=10)
 
 
 
