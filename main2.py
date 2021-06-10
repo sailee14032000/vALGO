@@ -28,7 +28,7 @@ class vALGO(object):
         self.width = self.window.winfo_screenwidth() * 3 // 4
         self.height = self.window.winfo_screenheight() * 3 // 4
 
-        # Pages
+        #Pages
 
         self.queuepage = ttk.Frame(master=self.window)
         self.stackpage = ttk.Frame(master=self.window)
