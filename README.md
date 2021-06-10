@@ -7,6 +7,8 @@ vALGO also has 🔊 audio explanation feature which helps to understand traversa
 <p>⚙️ Simple steps for execution : <br>
 1) Extract zip file<br>
 2) Open vALGO folder<br>
-3) Open application named as vALGO</p>
+3) Open application named as main2</p>
 <p>If you found this interesting don't forget to give me a 🌟</p>
 <img src="https://github.com/sailee14032000/vALGO/blob/main/valgo.svg">
+<img src="https://github.com/sailee14032000/vALGO/blob/main/vALGO_gif.gif">
+
