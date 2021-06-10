@@ -28,6 +28,7 @@ class dfs_contents(object):
 
         self.node = ttk.Entry(master=self.set_of_operations,width=50)
         self.node.insert(0, "Enter starting vertex")
+
         self.output_frame = ttk.Frame(master=parentframe)
 
         self.output = tk.Canvas(master=self.output_frame, bg="#464646", bd=1, highlightthickness=1, highlightbackground="#d8d8d8",

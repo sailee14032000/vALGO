@@ -16,13 +16,13 @@ import dfspage
 import mergesortpage
 import quicksortpage
 import aboutvalgopage
-
+import os
 class vALGO(object):
     def __init__(self):
         self.window = ThemedTk(theme="equilux", className="vALGO")
         self.window.rowconfigure(0, weight=1)
         self.window.columnconfigure(0, weight=1)
-        self.logo = PhotoImage(file="D:/python projects/logos/png/logoc.png")
+        self.logo = PhotoImage(file="png\\logoc.png")
         self.window.iconphoto(False, self.logo)
 
         self.width = self.window.winfo_screenwidth() * 3 // 4
@@ -90,7 +90,7 @@ class vALGO(object):
         heading = ttk.Frame(master=parentframe)
 
         canvas = tk.Canvas(master=heading, width=100, height=80, bg="#464646")
-        self.mainimg = PhotoImage(file="D:/python projects/logos/png/mimg4.png")
+        self.mainimg = PhotoImage(file="png\\mimg4.png")
         canvas.create_image(50, 50, image=self.mainimg)
 
         canvas.config(highlightthickness=0)
@@ -104,55 +104,55 @@ class vALGO(object):
         contents = ttk.Frame(master=parentframe)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/stack2.png"
+        algoimg = "png\\stack2.png"
         algo.addalgo("stack", self.width, self.height, algoimg, 0, 0, self.stackpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/ll.png"
+        algoimg = "png\\ll.png"
         algo.addalgo("Linkedlist", self.width, self.height, algoimg, 0, 1, self.linkedlistpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/queue.png"
+        algoimg = "png\\queue.png"
         algo.addalgo("Queue", self.width, self.height, algoimg, 0, 2, self.queuepage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/selectionsort.png"
+        algoimg = "png\\selectionsort.png"
         algo.addalgo("Selection sort", self.width, self.height, algoimg, 1, 0,
                      self.selectionsortpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/bubblesort.png"
+        algoimg = "png\\bubblesort.png"
 
         algo.addalgo("Bubble sort", self.width, self.height, algoimg, 2, 1,
                      self.bubblesortpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/insertionsort.png"
+        algoimg = "png\\insertionsort.png"
         algo.addalgo("Insertion sort", self.width, self.height, algoimg, 1, 2,
                      self.insertionsortpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/binarytree.png"
+        algoimg = "png\\binarytree.png"
         algo.addalgo("Binary Search Tree", self.width, self.height, algoimg, 2, 0, self.binarysearchtreepage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/bfs.png"
+        algoimg = "png\\bfs.png"
         algo.addalgo("BFS", self.width, self.height, algoimg, 1, 1, self.bfspage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/dfs.png"
+        algoimg = "png\\dfs.png"
         algo.addalgo("DFS", self.width, self.height, algoimg, 2, 2, self.dfspage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/mergesort.png"
+        algoimg = "png\\mergesort.png"
         algo.addalgo("Mergesort", self.width, self.height, algoimg, 0, 3, self.mergesortpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/quicksort.png"
+        algoimg = "png\\quicksort.png"
         algo.addalgo("Quicksort", self.width, self.height, algoimg, 1, 3, self.quicksortpage)
 
         algo = settings.algos(contents)
-        algoimg = "D:/python projects/logos/png/sailee.png"
+        algoimg = "png\\info.png"
         algo.addalgo("About valgo", self.width, self.height, algoimg, 2, 3, self.aboutvalgopage)
 
 
@@ -161,6 +161,8 @@ class vALGO(object):
 
     def start(self):
         self.window.mainloop()
+
+
 
 
 if __name__ == "__main__":

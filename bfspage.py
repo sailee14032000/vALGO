@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox as msg
 import time
 import footer
-
+import voice_assistance
 class bfs_contents(object):
 
     def __init__(self,ancestorpage,parentframe,width,height):
@@ -28,6 +28,8 @@ class bfs_contents(object):
 
         self.node = ttk.Entry(master=self.set_of_operations,width=50)
         self.node.insert(0, "Enter starting vertex")
+        self.node.bind('<Button-1>',self.deletetext)
+
         self.output_frame = ttk.Frame(master=parentframe)
 
         self.output = tk.Canvas(master=self.output_frame, bg="#464646", bd=1, highlightthickness=1, highlightbackground="#d8d8d8",
@@ -37,16 +39,27 @@ class bfs_contents(object):
         self.start = ttk.Button(master=self.set_of_operations, text="START", command=lambda: self.bfs(self.output))
         self.cgraph = ttk.Button(master=self.set_of_operations, text="CREATE GRAPH",
                                       command=lambda:self.creategraph(self.output))
+        self.instructor = voice_assistance.voice_assistant()
+        self.allow_speaking = False
+        self.voice_b = ttk.Button(master=self.set_of_operations, text="🔊 Guide",
+                                  command=lambda: self.guide(self.output))
+        self.allow_execution = True
 
         self.cgraph.pack(side=tk.LEFT, padx=2)
         self.node.pack(side=tk.LEFT, ipady=4, padx=2)
         self.start.pack(side=tk.LEFT, padx=2)
+        self.voice_b.pack(side=tk.LEFT, padx=2)
+
         self.set_of_operations.pack(fill=tk.X)
 
 
         self.output.pack(fill=tk.BOTH, expand=1)
         self.output_frame.pack(pady=20, padx=40, fill=tk.BOTH, expand=1)
         self.end = footer.footerlabel(parentframe)
+
+    def deletetext(self, event):
+        event.widget.delete(0, "end")
+        return None
 
     def bfs(self,output):
 
@@ -57,39 +70,61 @@ class bfs_contents(object):
 
         if len(list(output.find_all()))==0:
             msg.showinfo(title="Creating a graph", message="Click inside the canvas section to create graph nodes and then click start")
+            return
+
+        if not self.allow_execution:
+            return
+        self.allow_execution = not self.allow_execution
 
         input = self.node.get()
         if input == "" or input == "Enter node value":
             msg.showwarning(title="No Input", message="Please enter input")
+            self.allow_execution = not self.allow_execution
             return
 
         visited = [False]*self.no_of_nodes
         bfs_queue = []
         bfs_queue.append(int(input))
-        visited[int(input)-1] = True
+        visited[int(input) - 1] = True
+        self.explain("Marking {} as visited".format(input))
+        output.itemconfig(self.graph_nodes[bfs_queue[0]][0], fill='#3be13b')
+        output.itemconfig(self.graph_nodes[bfs_queue[0]][1], fill='black')
+        output.update()
 
         while bfs_queue:
 
             current = bfs_queue.pop(0)
-            output.itemconfig(self.graph_nodes[current][0],fill='#3be13b')
-            output.itemconfig(self.graph_nodes[current][1], fill='black')
-            #output.itemconfig(self.graph_nodes[current][3][i], fill='#3be13b')
-            #output.itemconfig(self.graph_nodes[current][3][i],width=1)
-            output.update()
-            time.sleep(1)
 
+
+            
             for i in self.graph_nodes[current][2]:
+
                 if not visited[i-1]:
+                    self.explain("Neighbour of {0} is {1} marking it as visited and adding it to queue.".format(current,i))
+                    output.itemconfig(self.graph_nodes[i][0], fill='#3be13b')
+                    output.itemconfig(self.graph_nodes[i][1], fill='black')
+                    output.update()
+
                     bfs_queue.append(i)
                     if i in list(map(lambda x: x[0],self.graph_nodes[current][3])):
                         index_ = list(map(lambda x: x[0],self.graph_nodes[current][3])).index(i)
                         output.itemconfig(self.graph_nodes[current][3][index_][1], fill='#3be13b')
                         output.itemconfig(self.graph_nodes[current][3][index_][1], width=1)
+                        output.update()
                     visited[i-1] = True
+                else:
+                    self.explain("Neighbour of {0} is {1} but it is already visited".format(current, i))
+
+        self.allow_execution = not self.allow_execution
+
 
 
 
     def creategraph(self,output):
+        if not self.allow_execution:
+            return
+        self.allow_execution = not self.allow_execution
+
 
         output.configure(bg='#d8d8d8')
         output.delete(tk.ALL)
@@ -159,6 +194,23 @@ class bfs_contents(object):
         output.bind('<ButtonPress-1>',create_new_node)
         output.bind('<B1-Motion>',dragline)
         output.bind('<ButtonRelease-1>',stopline)
+        self.allow_execution = not self.allow_execution
+
+
+    def explain(self,sentence):
+        if self.allow_speaking:
+            self.instructor.speak(sentence)
+
+    def guide(self,output):
+        v = self.allow_speaking
+        self.allow_speaking = (not v)
+        if self.allow_speaking:
+            self.voice_b.config(text="🔊 On")
+
+        else:
+            self.voice_b.config(text="🔊 Off")
+
+
 
 
 

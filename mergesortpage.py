@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox as msg
 import time
 import footer
+import voice_assistance
 class mergesort_contents(object):
     def __init__(self,ancestorpage,parentframe,width,height):
         self.back = ttk.Button(master=parentframe, text="← Back", command=lambda: self.raise_frame(ancestorpage))
@@ -22,14 +23,24 @@ class mergesort_contents(object):
 
         self.node = ttk.Entry(master=self.set_of_operations,width=50)
         self.node.insert(0, "29,4,150,34,90,12,36,87,45")
+        self.node.bind('<Button-1>', self.deletetext)
+
         self.output_frame = ttk.Frame(master=parentframe)
 
         self.output = tk.Canvas(master=self.output_frame, bg="#464646", bd=1, highlightthickness=1, highlightbackground="#d8d8d8",
                            relief=tk.FLAT, scrollregion=(0, 0, 100, 100))
 
+
         self.sort = ttk.Button(master=self.set_of_operations, text="SORT", command=lambda: self.sort_(self.output))
+
+        self.instructor = voice_assistance.voice_assistant()
+        self.allow_speaking = False
+        self.voice_b = ttk.Button(master=self.set_of_operations, text="🔊 Guide",
+                                  command=lambda: self.guide(self.output))
+
         self.node.pack(side=tk.LEFT, ipady=4, ipadx=4)
         self.sort.pack(side=tk.LEFT, padx=2)
+        self.voice_b.pack(side=tk.LEFT, padx=2)
         self.set_of_operations.pack(fill=tk.X)
 
         self.horscroll = tk.Scrollbar(master=self.output_frame, orient=tk.HORIZONTAL)
@@ -46,6 +57,7 @@ class mergesort_contents(object):
         self.output_frame.pack(pady=20, padx=40, fill=tk.BOTH, expand=1)
         self.end = footer.footerlabel(parentframe)
     def sort_(self,output):
+
         self.rectangles = []
         self.x = 40
         output.delete(tk.ALL)
@@ -53,6 +65,7 @@ class mergesort_contents(object):
         input = self.node.get()
         if input == "" or input == "Enter node value":
             msg.showwarning(title="No Input", message="Please enter input")
+
             return
         numbers = list(map(int, input.strip().split(',')))
         total_numbers = (len(numbers)*40+40)
@@ -78,6 +91,7 @@ class mergesort_contents(object):
         self.start(self.rectangles,numbers,output,y,x,x1)
 
     def start(self,rectangles,numbers,output,y,x,x1):
+
         if len(numbers)>1:
             mid = len(numbers)//2
             left = numbers[:mid]
@@ -111,6 +125,8 @@ class mergesort_contents(object):
                 self.animate(trl[i],trr[j],output)
 
                 if left[i]<right[j]:
+                    self.explain("{0} is less than {1}".format(left[i],right[j]))
+
                     numbers[k] = left[i]
                     output.itemconfig(rectangles[k][1],text=numbers[k])
                     output.update()
@@ -119,6 +135,9 @@ class mergesort_contents(object):
                     i+=1
                     k+=1
                 else:
+                    self.explain("{0} is less than {1}".format(right[j],left[i]))
+
+
                     numbers[k] = right[j]
                     output.itemconfig(rectangles[k][1], text=numbers[k])
                     output.update()
@@ -126,6 +145,9 @@ class mergesort_contents(object):
 
                     j += 1
                     k += 1
+            if i<len(left):
+                self.explain("Filling the array with remaining elements of left sub array")
+
 
             while i<len(left):
                 self.animate(trl[i],None,output)
@@ -138,6 +160,8 @@ class mergesort_contents(object):
 
                 k+=1
                 i+=1
+            if j < len(right):
+                self.explain("Filling the array with remaining elements of right sub array")
 
             while j < len(right):
                 self.animate(None,trr[j], output)
@@ -161,6 +185,7 @@ class mergesort_contents(object):
             time.sleep(0.3)
 
     def draw(self,arr,output,x,y):
+
         l = 0
         temp_rect =[]
 
@@ -175,7 +200,9 @@ class mergesort_contents(object):
 
         output.update()
         time.sleep(0.3)
+
         return start_x,start_x+(l*40),temp_rect
+
 
     def animate(self,obj1,obj2,output,color='#fb5581'):
         if obj1 is None and obj2 is not None:
@@ -215,8 +242,27 @@ class mergesort_contents(object):
             output.update()
             time.sleep(0.3)
 
+
     def raise_frame(self,ancestorpage):
         ancestorpage.tkraise()
+
+    def deletetext(self,event):
+        event.widget.delete(0,"end")
+        return None
+
+    def explain(self,sentence):
+        if self.allow_speaking:
+            self.instructor.speak(sentence)
+
+    def guide(self,output):
+        v = self.allow_speaking
+        self.allow_speaking = (not v)
+        if self.allow_speaking:
+            self.voice_b.config(text="🔊 On")
+
+        else:
+            self.voice_b.config(text="🔊 Off")
+
 
 
 

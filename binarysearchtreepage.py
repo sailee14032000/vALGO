@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox as msg
 import time
 import footer
+import voice_assistance
 
 class Node(object):
     def __init__(self,val,canvas,parent=None):
@@ -35,7 +36,7 @@ class binarysearchtree_contents(object):
 
         self.node = ttk.Entry(master=self.set_of_operations)
         self.node.insert(0, "Enter node value")
-
+        self.node.bind('<Button-1>', self.deletetext)
 
         self.output_frame = ttk.Frame(master=parentframe)
 
@@ -46,10 +47,17 @@ class binarysearchtree_contents(object):
         self.search_b = ttk.Button(master=self.set_of_operations, text="SEARCH", command=lambda: self.search(self.output))
         self.delete_b = ttk.Button(master=self.set_of_operations, text="DELETE", command=lambda: self.delete(self.output))
 
+        self.instructor = voice_assistance.voice_assistant()
+        self.allow_speaking = False
+        self.voice_b = ttk.Button(master=self.set_of_operations, text="🔊 Guide",
+                                  command=lambda: self.guide(self.output))
+        self.allow_execution = True
+
         self.node.pack(side=tk.LEFT, ipady=4, ipadx=4)
         self.insert_b.pack(side=tk.LEFT, padx=2)
         self.search_b.pack(side=tk.LEFT, padx=2)
         self.delete_b.pack(side=tk.LEFT, padx=2)
+        self.voice_b.pack(side=tk.LEFT, padx=2)
 
         self.set_of_operations.pack(fill=tk.X)
 
@@ -92,6 +100,9 @@ class binarysearchtree_contents(object):
                 if input<temp.val:
                     prev = temp
                     self.animate(prev.canvas,output)
+                    self.explain(
+                        "{0} is less than {1} Hence traversing to left sub tree of {1}".format(input, temp.val))
+
                     temp = temp.left
 
                     if not temp:
@@ -119,6 +130,8 @@ class binarysearchtree_contents(object):
                         prev.left = Node(input, canvas, prev)
                         self.animate(canvas, output)
 
+                        self.explain("{0} inserted".format(input))
+
                         sr = list(map(int,output.cget('scrollregion').split()))
                         if x<=sr[0]:
                             output.move(tk.ALL,50,0)
@@ -133,14 +146,20 @@ class binarysearchtree_contents(object):
 
 
                     else:
+
                         ancestor = prev.parent
                         if ancestor and ancestor.val <= prev.val:
                             self.move_all_cnodes(prev, 40, output)
                             output.update()
 
                 else:
+
                     prev = temp
                     self.animate(prev.canvas, output)
+                    self.explain(
+                        "{0} is greater than or equal to {1}  Hence traversing to right sub tree of {1}".format(input,
+                                                                                                                temp.val))
+
                     ancestor = prev.parent
                     temp = temp.right
 
@@ -160,6 +179,8 @@ class binarysearchtree_contents(object):
                         prev.right = Node(input, canvas, prev)
                         self.animate(canvas, output)
 
+                        self.explain("{0} inserted".format(input))
+
                         sr = list(map(int, output.cget('scrollregion').split()))
                         if x >= sr[2]*0.75:
                             output.update()
@@ -171,6 +192,7 @@ class binarysearchtree_contents(object):
                             output.update()
 
                     else:
+                        
                         if ancestor and ancestor.val > prev.val:
                             self.move_all_cnodes(prev, -40, output)
                             sr = list(map(int, output.cget('scrollregion').split()))
@@ -178,13 +200,16 @@ class binarysearchtree_contents(object):
                             output['scrollregion'] = (sr[0], sr[1], sr[2] + 100, sr[3])
                             output.update()
 
-
         # Right sub tree from root
         else:
             while temp:
                 if input>=temp.val:
+
                     prev = temp
                     self.animate(prev.canvas, output)
+                    self.explain(
+                        "{0} is greater than or equal to {1}  Hence traversing to right sub tree of {1}".format(input,
+                                                                                                                temp.val))
 
                     temp = temp.right
 
@@ -205,6 +230,7 @@ class binarysearchtree_contents(object):
                         canvas = [curr_circle, curr_text, arrow]
                         prev.right = Node(input, canvas, prev)
                         self.animate(canvas, output)
+                        self.explain("{0} inserted".format(input))
 
                         sr = list(map(int, output.cget('scrollregion').split()))
                         if x >= sr[2]*0.75:
@@ -227,8 +253,12 @@ class binarysearchtree_contents(object):
                             output.update()
 
                 else:
+
                     prev = temp
                     self.animate(prev.canvas, output)
+                    self.explain(
+                        "{0} is less than {1}  Hence traversing to left sub tree of {1}".format(input, temp.val))
+
                     ancestor = prev.parent
                     temp = temp.left
 
@@ -246,6 +276,7 @@ class binarysearchtree_contents(object):
                         canvas = [curr_circle, curr_text, arrow]
                         prev.left = Node(input, canvas, prev)
                         self.animate(canvas,output)
+                        self.explain("{0} inserted".format(input))
 
                         sr = list(map(int, output.cget('scrollregion').split()))
                         if x < sr[0]:
@@ -270,15 +301,27 @@ class binarysearchtree_contents(object):
         temp = self.root
         while temp:
             if input<temp.val:
+
                 self.animate(temp.canvas,output)
+                self.explain("{0} is less than {1}  Hence traversing to left sub tree of {1}".format(input,temp.val))
+
                 temp = temp.left
             elif input>temp.val:
+
                 self.animate(temp.canvas, output)
+                self.explain(
+                    "{0} is greater than or equal to {1}  Hence traversing to right sub tree of {1}".format(input,
+                                                                                                            temp.val))
+
                 temp = temp.right
             else:
                 self.animate(temp.canvas, output,'#fb5581')
+                self.explain("{0} found".format(input))
+
                 return
         else:
+            self.explain("{0} is not present in tree".format(input))
+
             msg.showwarning(title="Not Found",message="{} is not present in tree.".format(input))
             return
 
@@ -404,7 +447,9 @@ class binarysearchtree_contents(object):
                             self.found_delete(prev, 'r', 'l', temp, deletion_to_be_made, output)
                             return
 
-
+    def deletetext(self,event):
+        event.widget.delete(0,"end")
+        return None
 
     def found_delete(self,prev,dir1,dir2,temp,deletion_to_be_made,output):
         if temp.left is None and temp.right is None:
@@ -570,6 +615,20 @@ class binarysearchtree_contents(object):
         output.itemconfig(node[0], fill="black")
         output.itemconfig(node[1], fill="white")
         output.update()
+
+    def explain(self,sentence):
+        if self.allow_speaking:
+            self.instructor.speak(sentence)
+
+    def guide(self,output):
+        v = self.allow_speaking
+        self.allow_speaking = (not v)
+        if self.allow_speaking:
+            self.voice_b.config(text="🔊 On")
+
+        else:
+            self.voice_b.config(text="🔊 Off")
+
 
 
 

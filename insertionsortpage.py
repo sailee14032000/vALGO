@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter import messagebox as msg
 import time
 import footer
+import voice_assistance
+
 class insertionsort_contents(object):
 
     def __init__(self,ancestorpage,parentframe,width,height):
@@ -29,8 +31,18 @@ class insertionsort_contents(object):
                            relief=tk.FLAT, scrollregion=(0, 0, 100, 100))
 
         self.sort = ttk.Button(master=self.set_of_operations, text="SORT", command=lambda: self.sort_(self.output))
+
+        self.instructor = voice_assistance.voice_assistant()
+        self.allow_speaking = False
+        self.voice_b = ttk.Button(master=self.set_of_operations, text="🔊 Guide",
+                                  command=lambda: self.guide(self.output))
+        self.allow_execution = True
+
+
         self.node.pack(side=tk.LEFT, ipady=4, ipadx=4)
         self.sort.pack(side=tk.LEFT, padx=2)
+        self.voice_b.pack(side=tk.LEFT, padx=2)
+
         self.set_of_operations.pack(fill=tk.X)
 
         self.horscroll = tk.Scrollbar(master=self.output_frame, orient=tk.HORIZONTAL)
@@ -95,6 +107,7 @@ class insertionsort_contents(object):
             time.sleep(0.3)
 
             while j>=0 and current<numbers[j]:
+                self.explain("{0} is less than {1} Hence swapping ".format(current,numbers[j]))
                 output.move(current_rect[1],-50,0)
                 output.move(current_rect[0], -50, 0)
 
@@ -127,3 +140,21 @@ class insertionsort_contents(object):
 
     def raise_frame(self,ancestorpage):
         ancestorpage.tkraise()
+
+    def deletetext(self, event):
+        event.widget.delete(0, "end")
+        return None
+
+    def explain(self,sentence):
+        if self.allow_speaking:
+            self.instructor.speak(sentence)
+
+    def guide(self,output):
+        v = self.allow_speaking
+        self.allow_speaking = (not v)
+        if self.allow_speaking:
+            self.voice_b.config(text="🔊 On")
+
+        else:
+            self.voice_b.config(text="🔊 Off")
+
