@@ -1,6 +1,5 @@
 
 <span float="left"><img src="https://github.com/sailee14032000/vALGO/blob/main/logos/png/mimg4.png"><span class="name">vALGO</span></span>
-[![Github All Releases](https://img.shields.io/github/downloads/sailee14032000/vALGO/total.svg)]()
 <br>
 <br>
 
